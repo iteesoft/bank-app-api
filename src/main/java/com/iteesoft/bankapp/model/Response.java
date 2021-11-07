@@ -1,33 +1,24 @@
 package com.iteesoft.bankapp.model;
 
-import com.iteesoft.bankapp.enums.TransactionType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
+import java.util.Map;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Data
-@NoArgsConstructor
+@SuperBuilder
+@JsonInclude(NON_NULL)
 public class Response {
 
     private static final long serialVersionUID = 7702134516418120340L;
 
-    private int statusCode;
-    private Boolean success;
-    private String message;
-    private String accountNo;
-    private LocalDateTime date = LocalDateTime.now();
-
-    public Response(int statusCode, Boolean success, String message) {
-        this.success = success;
-        this.message = message;
-        this.statusCode = statusCode;
-    }
-
-    public Response(int statusCode, Boolean success, String message, String accountNo) {
-        this.statusCode = statusCode;
-        this.success = success;
-        this.message = message;
-        this.accountNo = accountNo;
-    }
-
+    protected LocalDateTime timeStamp;
+    protected int statusCode;
+    protected HttpStatus status;
+    protected Boolean success;
+    protected String message;
+    protected Map<?,?> data;
 }

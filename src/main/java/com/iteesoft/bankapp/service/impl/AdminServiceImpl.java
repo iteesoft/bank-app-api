@@ -2,7 +2,6 @@ package com.iteesoft.bankapp.service.impl;
 
 import com.iteesoft.bankapp.dto.CrDrDto;
 import com.iteesoft.bankapp.dto.RegistrationDto;
-import com.iteesoft.bankapp.enums.AccountType;
 import com.iteesoft.bankapp.enums.TransactionType;
 import com.iteesoft.bankapp.exceptions.AppException;
 import com.iteesoft.bankapp.model.*;
@@ -13,15 +12,14 @@ import com.iteesoft.bankapp.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
+import javax.transaction.Transactional;
 import java.util.*;
-
 import static com.iteesoft.bankapp.enums.TransactionType.DEPOSIT;
 import static com.iteesoft.bankapp.enums.TransactionType.WITHDRAWAL;
 
 @Slf4j
 @Service
+@Transactional
 public class AdminServiceImpl implements AdminService {
 
     @Autowired
@@ -31,15 +29,13 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     TransactionRepository transactionRepo;
 
-    Response response = new Response();
-
     @Override
-    public Response createAccount(RegistrationDto accountInfo) {
+    public Account createAccount(RegistrationDto accountInfo) {
         return null;
     }
 
     @Override
-    public Response deposit(CrDrDto creditInfo) {
+    public Account deposit(CrDrDto creditInfo) {
         Account account = accountRepo.findByAccountNumber(creditInfo.getAccountNumber());
 
         if (account != null) {
@@ -49,17 +45,14 @@ public class AdminServiceImpl implements AdminService {
             Transaction transaction = createTransaction(creditInfo.getNarration(), creditInfo.getAmount(), newBalance, DEPOSIT);
             addTransactionToAccount(account, transaction);
 
-            response.setSuccess(true);
-            response.setMessage(creditInfo.getAmount() +" successfully credited into account: "+creditInfo.getAccountNumber());
         } else {
-            response.setSuccess(false);
-            response.setMessage("Invalid Account: "+creditInfo.getAccountNumber());
+            log.error("Invalid Account: "+creditInfo.getAccountNumber());
         }
-        return response;
+        return account;
     }
 
     @Override
-    public Response withdraw(CrDrDto debitInfo) {
+    public Account withdraw(CrDrDto debitInfo) {
         Account account = accountRepo.findByAccountNumber(debitInfo.getAccountNumber());
 
         if (account != null) {
@@ -68,11 +61,12 @@ public class AdminServiceImpl implements AdminService {
             Transaction transaction = createTransaction(debitInfo.getNarration(), debitInfo.getAmount(), newBalance,WITHDRAWAL);
 
             addTransactionToAccount(account, transaction);
-            return new Response(true, debitInfo.getAmount() +" successfully debited from account: "+debitInfo.getAccountNumber());
+            log.info( debitInfo.getAmount() +" successfully debited from account: "+debitInfo.getAccountNumber());
 
         } else {
-            return new Response(false, "Transaction Not Authorized on "+debitInfo.getAccountNumber());
+            log.error("Transaction Not Authorized on "+debitInfo.getAccountNumber());
         }
+        return account;
     }
 
     @Override
@@ -82,12 +76,12 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Response viewAccountInfo(String accountNumber) {
+    public Account viewAccountInfo(String accountNumber) {
         Account account = accountRepo.findByAccountNumber(accountNumber);
         if (account == null) {
-            return new Response(false,"Invalid Account");
+            log.error("Invalid Account");
         }
-        return new Response(true,"Account Fetched Successfully",account);
+        return account;
     }
 
     public Account getUserAccount(String accountNo, int id) throws AppException {
