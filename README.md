@@ -1,6 +1,11 @@
-# DigiCoreTask
+# Bank Application
 
-The solution to DigiCore Software engineer Challenge- Ifeoluwa Adebayo
-It contains 2 packages;
-1. Bank Springboot App
-2. Algorithm solution
+This API performs simple banking operations
+
+Users can;
+1. Register
+2. Open account
+3. make deposit
+4. make withdrawal
+5. make transfer
+

@@ -3,9 +3,7 @@ package com.iteesoft.bankapp.model;
 import com.iteesoft.bankapp.enums.TransactionType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -15,24 +13,9 @@ public class Response {
 
     private int statusCode;
     private Boolean success;
-    private JwtResponse accessToken;
     private String message;
-    private Account account;
-    private LocalDateTime transactionDate;
-    private TransactionType transactionType;
-    private Double amount;
-    private Double accountBalanceAfterTransaction;
-
-    public Response(int statusCode, Boolean success, String message, Account account) {
-        this.statusCode = statusCode;
-        this.success = success;
-        this.message = message;
-        this.account = account;
-    }
-    public Response(Boolean success, JwtResponse accessToken) {
-        this.success = success;
-        this.accessToken = accessToken;
-    }
+    private String accountNo;
+    private LocalDateTime date = LocalDateTime.now();
 
     public Response(int statusCode, Boolean success, String message) {
         this.success = success;
@@ -40,12 +23,11 @@ public class Response {
         this.statusCode = statusCode;
     }
 
-    public Response(int statusCode, Boolean success, String message, LocalDateTime transactionDate, TransactionType transactionType, Double accountBalanceAfterTransaction) {
+    public Response(int statusCode, Boolean success, String message, String accountNo) {
         this.statusCode = statusCode;
         this.success = success;
         this.message = message;
-        this.transactionDate = transactionDate;
-        this.transactionType = transactionType;
-        this.accountBalanceAfterTransaction = accountBalanceAfterTransaction;
+        this.accountNo = accountNo;
     }
+
 }

@@ -1,50 +1,50 @@
 package com.iteesoft.bankapp.controller;
 
-import com.iteesoft.bankapp.dto.AccountDto;
-import com.iteesoft.bankapp.dto.DepositDto;
-import com.iteesoft.bankapp.dto.WithdrawalDto;
+import com.iteesoft.bankapp.dto.RegistrationDto;
+import com.iteesoft.bankapp.dto.CrDrDto;
 import com.iteesoft.bankapp.exceptions.AppException;
 import com.iteesoft.bankapp.model.Response;
-import com.iteesoft.bankapp.service.AccountService;
-import lombok.AllArgsConstructor;
+import com.iteesoft.bankapp.service.AdminService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@AllArgsConstructor
 @RestController
-public class AccountController {
+@RequestMapping("api/v1/admin")
+public class AdminController {
 
-    private AccountService accountService;
+    @Autowired
+    private AdminService adminService;
 
 
     @PostMapping("/register_account")
-    public ResponseEntity<?> newAccount(@RequestBody AccountDto newAccountInfo) throws AppException {
-        return ResponseEntity.ok(accountService.createAccount(newAccountInfo));
+    public ResponseEntity<?> newAccount(@RequestBody RegistrationDto newAccountInfo) {
+        return ResponseEntity.ok(adminService.createAccount(newAccountInfo));
     }
 
     @GetMapping("/account_info/{accountNumber}")
     public ResponseEntity<?> viewAccountInfo(@PathVariable String accountNumber) {
-        Response response = accountService.viewAccountInfo(accountNumber);
+        Response response = adminService.viewAccountInfo(accountNumber);
         HttpStatus status = response.getSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
         return new ResponseEntity<>(response, status);
     }
 
     @GetMapping("/account_statement/{accountNumber}")
     public ResponseEntity<?> viewAccountStatement(@PathVariable String accountNumber) {
-        return ResponseEntity.ok(accountService.getTransactions(accountNumber));
+        return ResponseEntity.ok(adminService.getAccountStatement(accountNumber));
     }
 
     @PostMapping("/deposit")
-    public ResponseEntity<?> depositToAccount(@RequestBody DepositDto depositInfo) throws AppException {
-        Response response = accountService.deposit(depositInfo);
+    public ResponseEntity<?> depositToAccount(@RequestBody CrDrDto depositInfo) throws AppException {
+        Response response = adminService.deposit(depositInfo);
         HttpStatus status = response.getSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
         return new ResponseEntity<>(response, status);
     }
 
     @PostMapping("/withdrawal")
-    public ResponseEntity<?> withdrawFromAccount(@RequestBody WithdrawalDto withdrawalInfo) throws AppException {
-        Response response = accountService.withdraw(withdrawalInfo);
+    public ResponseEntity<?> withdrawFromAccount(@RequestBody CrDrDto withdrawalInfo) throws AppException {
+        Response response = adminService.withdraw(withdrawalInfo);
         HttpStatus status = response.getSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
         return new ResponseEntity<>(response, status);    }
 }

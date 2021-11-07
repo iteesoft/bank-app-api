@@ -1,12 +1,12 @@
 package com.iteesoft.bankapp.controller;
 
 import com.iteesoft.bankapp.configuration.JwtTokenUtil;
-import com.iteesoft.bankapp.dto.AccountDto;
+import com.iteesoft.bankapp.dto.RegistrationDto;
 import com.iteesoft.bankapp.exceptions.AppException;
 import com.iteesoft.bankapp.model.JwtRequest;
 import com.iteesoft.bankapp.model.JwtResponse;
 import com.iteesoft.bankapp.model.Response;
-import com.iteesoft.bankapp.service.AccountService;
+import com.iteesoft.bankapp.service.AdminService;
 import com.iteesoft.bankapp.service.impl.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,7 @@ public class JwtAuthenticationController {
     private AuthenticationManager authenticationManager;
     private JwtTokenUtil jwtTokenUtil;
     private UserDetailsServiceImpl userDetailsService;
-    private AccountService accountService;
+    private AdminService adminService;
 
     @PostMapping(value = "/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest jwtRequest) throws Exception {
@@ -46,8 +46,8 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping(value = "/create_account")
-    public ResponseEntity<Response> registerNewAccount(@RequestBody AccountDto accountInfo) throws AppException {
-        Response response = accountService.createAccount(accountInfo);
+    public ResponseEntity<Response> registerNewAccount(@RequestBody RegistrationDto accountInfo) throws AppException {
+        Response response = adminService.createAccount(accountInfo);
         HttpStatus status = response.getSuccess() ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST;
         return new ResponseEntity<>(response, status);
     }

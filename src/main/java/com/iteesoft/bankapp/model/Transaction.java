@@ -1,16 +1,23 @@
 package com.iteesoft.bankapp.model;
 
 import com.iteesoft.bankapp.enums.TransactionType;
-import lombok.Data;
-import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@Entity
 public class Transaction {
 
-    String accountNumber;
-    Date transactionDate;
-    TransactionType transactionType;
-    String narration;
-    Double amount;
-    Double balanceAfterTransaction;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
+    private LocalDateTime transactionDate = LocalDateTime.now();
+    private TransactionType transactionType;
+    private String narration;
+    private Double amount;
+    private Double balanceAfterTransaction;
 }

@@ -1,38 +1,32 @@
 package com.iteesoft.bankapp.service.impl;
 
 
-import com.iteesoft.bankapp.model.Account;
-import com.iteesoft.bankapp.service.AccountService;
-import lombok.SneakyThrows;
+import com.iteesoft.bankapp.model.AppUser;
+import com.iteesoft.bankapp.repository.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import javax.security.auth.login.AccountNotFoundException;
+import java.util.ArrayList;
 
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private AccountService service;
+    private AppUserRepository userRepo;
 
 
-    @SneakyThrows
     @Override
-    public UserDetails loadUserByUsername(String accountNumber) throws UsernameNotFoundException {
-
-        User.UserBuilder userBuilder;
-        Account account = service.getAccountInfo(accountNumber);
-
-            if (account.getAccountNumber().equalsIgnoreCase(accountNumber)){
-                userBuilder = User.withUsername(accountNumber);
-                userBuilder.password(account.getAccountPassword());
-            }else {
-                throw new AccountNotFoundException("Account Not Found!");
-            }
-        return userBuilder.build();
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        AppUser user = userRepo.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with username: " + email);
+        }
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
+                new ArrayList<>());
     }
+
+
 }

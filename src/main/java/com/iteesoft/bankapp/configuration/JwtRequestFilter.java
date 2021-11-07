@@ -1,8 +1,8 @@
 package com.iteesoft.bankapp.configuration;
 
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,11 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-@AllArgsConstructor
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
+    @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     
@@ -65,5 +66,5 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-    }
+}
 
